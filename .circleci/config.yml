@@ -49,9 +49,18 @@ jobs:
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
       - run:
+          name: create store dir
+          command: mkdir /tmp/test-results
+      - run:
           name: Rubocop
           command: bundle exec rubocop
       - run:
           name: Rspec
-          command: bundle exec rspec
-
+          command: |
+            bundle exec rspec \
+              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-screenshots
