@@ -8,6 +8,10 @@ require File.expand_path('../config/environment', __dir__)
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
+require 'capybara/rails'
+require 'capybara/rspec'
+
+Webdrivers.logger.level = ::Logger::Severity::DEBUG
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -36,10 +40,37 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
+
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+
+  config.before(:each) do |example|
+    if example.metadata[:type] == :system
+      driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
+    end
+  end
+
+  # config.after :each do
+  #   travel_back
+  #   Timecop.return
+  #   ActionMailer::Base.deliveries.clear
+  # end
+
+  # controllerのテストでもViewをrenderするようにする
+  # config.render_views
+  #
+  # config.include ActionDispatch::TestProcess
+  # config.include Capybara::DSL, type: :system
+  # config.include Capybara::DSL, type: :request
+  # config.include FactoryBot::Syntax::Methods
+  # config.include ActiveJob::TestHelper
+  # config.include ActiveSupport::Testing::TimeHelpers
+  # config.include ::Rails::Controller::Testing::TestProcess, type: :controller
+  # config.include ::Rails::Controller::Testing::TemplateAssertions, type: :controller
+  # config.include ::Rails::Controller::Testing::Integration, type: :controller
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
@@ -60,5 +91,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-  config.include FactoryBot::Syntax::Methods
 end

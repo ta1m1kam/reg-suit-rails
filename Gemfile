@@ -21,6 +21,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'rubocop'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'webdrivers'
 end
 
 group :development do
@@ -32,8 +33,8 @@ end
 
 group :test do
   gem 'capybara', '>= 2.15'
+  gem 'timecop'
   gem 'selenium-webdriver'
-  gem 'chromedriver-helper'
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
